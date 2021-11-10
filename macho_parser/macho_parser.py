@@ -131,12 +131,13 @@ section_64_struct = Struct('16s16sQQIIIIIIII')
 
 
 class MachO(object):
-    def __init__(self, filename):
+    def __init__(self, filename=None, mm=None):
         self._filename = filename
         self._rf = None
-        self._mm = None
+        self._mm = mm # optionally use a bytearray for _mm (instead of reading from filename)
 
     def __enter__(self):
+        if self._mm: return self # _mm is already set in constructor
         self._rf = open(self._filename, 'rb')
         self._mm = mmap.mmap(self._rf.fileno(), 0, mmap.MAP_PRIVATE, mmap.PROT_READ)
         return self
@@ -144,6 +145,7 @@ class MachO(object):
     def __exit__(self, exc_type, exc_value, exc_traceback):
         if exc_type is not None:
             pass
+        if not self._rf: return # when _rf is None, _mm is not a mmap
         self._mm.close()
         self._rf.close()
 
