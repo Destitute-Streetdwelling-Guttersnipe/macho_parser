@@ -161,7 +161,7 @@ class MachO(object):
     def _get_load_commands(self):
         """return a 3-tuple (begin_pos, end_pos, load_command)."""
         _, cur_pos, header = self._get_header()
-        for i in xrange(header.ncmds):
+        for i in range(header.ncmds):
             lc = load_command._make(load_command_struct.unpack(self._mm[cur_pos : cur_pos + load_command_struct.size]))
             yield (cur_pos, cur_pos + load_command_struct.size, lc)
             cur_pos += lc.cmdsize
@@ -187,7 +187,7 @@ class MachO(object):
     def _get_sections(self):
         """return a 3-tuple (begin_pos, end_pos, section)."""
         for pos, sect_pos, seg in self._get_segments():
-            for i in xrange(seg.nsects):
+            for i in range(seg.nsects):
                 """NOTE: move the branch to outter loop will be better for performance consideration, but it will duplicate some code."""
                 """NOTE: in the case, I don't care about the performance."""
                 if seg.cmd == LC_SEGMENT_64:
